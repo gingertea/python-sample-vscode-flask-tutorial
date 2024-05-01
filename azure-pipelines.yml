@@ -4,65 +4,44 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 trigger:
-- main
+  branches:
+    include:
+      - main
 
 variables:
-# Azure Resource Manager connection created during pipeline creation
-- name: pythonVersion
-  value: '3.7'
-- name: azureServiceConnectionId
-  value: '97428859-41c8-44fd-a47d-aca80b42156d'
+  # Azure Resource Manager connection created during pipeline creation
+  pythonVersion: '3.7'
+  azureServiceConnectionId: '97428859-41c8-44fd-a47d-aca80b42156d'
 
 pool: ubuntu-local
-#strategy:
-#  matrix:
-#    Python27:
-#      python.version: '2.7'
-#    Python35:
-#      python.version: '3.5'
-#    Python36:
-#      python.version: '3.6'
-#    Python37:
-#      python.version: '3.7'
 
-# steps:
-# #- task: UsePythonVersion@0
-# #  inputs:
-# #    versionSpec: '$(pythonVersion)'
-# #  displayName: 'Use Python $(pythonVersion)'
-
-# - script: |
-#     python -m pip install --upgrade pip
-#     pip install -r requirements.txt
-#   displayName: 'Install dependencies'
-
-# - script: |
-#     pip install pytest pytest-azurepipelines
-#     pytest
-#   displayName: 'pytest'
-
+jobs:
 - job: BuildJob
   displayName: 'Build'
+  pool: ubuntu-local
 
-    steps:
-    - script: |
-       python -m venv antenv
-       source antenv/bin/activate
-       python -m pip install --upgrade pip
-       pip install setup
-       pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
-     workingDirectory: $(projectRoot)
-     displayName: "Install requirements"
+  steps:
+  - script: |
+      python -m venv antenv
+      source antenv/bin/activate
+      python -m pip install --upgrade pip
+      pip install <package_name>
+      pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
+    workingDirectory: $(projectRoot)
+    displayName: "Install requirements"
 
-    - task: ArchiveFiles@2
-     displayName: 'Archive files'
-     inputs:
-       rootFolderOrFile: '$(projectRoot)'
-       includeRootFolder: false
-       archiveType: zip
-       archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-       replaceExistingArchive: true
+  - task: ArchiveFiles@2
+    displayName: 'Archive files'
+    inputs:
+      rootFolderOrFile: '$(projectRoot)'
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      replaceExistingArchive: true
 
-   - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-     displayName: 'Upload package'
-     artifact: drop 
+  - task: PublishBuildArtifacts@1
+    displayName: 'Upload package'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      ArtifactName: 'drop'
+
