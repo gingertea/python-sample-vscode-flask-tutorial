@@ -23,10 +23,10 @@ pool: ubuntu-local
 #      python.version: '3.7'
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(pythonVersion)'
-  displayName: 'Use Python $(pythonVersion)'
+#- task: UsePythonVersion@0
+#  inputs:
+#    versionSpec: '$(pythonVersion)'
+#  displayName: 'Use Python $(pythonVersion)'
 
 - script: |
     python -m pip install --upgrade pip
