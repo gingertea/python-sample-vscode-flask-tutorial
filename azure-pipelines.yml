@@ -8,7 +8,8 @@ trigger:
 
 variables:
 # Azure Resource Manager connection created during pipeline creation
-pythonVersion: '3.7'
+- name: pythonVersion
+  value: '3.7'
 
 pool: ubuntu-local
 #strategy:
