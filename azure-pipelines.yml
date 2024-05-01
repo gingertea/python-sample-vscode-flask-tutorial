@@ -42,8 +42,7 @@ pool: ubuntu-local
 #   displayName: 'pytest'
 
 - job: BuildJob
-    pool:
-      vmImage: $(vmImageName)
+  displayName: 'Build'
 
     steps:
     - script: |
