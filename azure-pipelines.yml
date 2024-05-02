@@ -13,6 +13,8 @@ variables:
   pythonVersion: '3.7'
   azureServiceConnectionId: '3b7ef9f3-48fc-4d29-a9f8-3de02b79dac0'
   projectRoot: $(System.DefaultWorkingDirectory)
+  webAppName: 'sy-test-app'
+  environmentName: 'sy-test-app'
 
 pool: ubuntu-local
 
@@ -44,4 +46,23 @@ jobs:
     inputs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       ArtifactName: 'drop'
+
+ 
+ - job: DeploymentJob
+   displayName: 'Deploy'
+   pool: ubuntu-local
+   dependsOn: BuildJob
+   condition: succeeded()
+
+   strategy:
+    runOnce:
+      deploy:
+        steps:
+
+        - task: AzureWebApp@1
+          displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
+          inputs:
+            azureSubscription: $(azureServiceConnectionId)
+            appName: $(webAppName)
+            package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
 
