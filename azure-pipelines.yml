@@ -55,10 +55,10 @@ stages:
   displayName: 'Deploy to the dev environment'
   dependsOn: Build
   condition:  succeeded()
-  environment: dev
   jobs:
   - deployment: Deploy
     pool: ubuntu-local
+    environment: dev
     strategy:
       runOnce:
         deploy:
