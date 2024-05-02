@@ -47,15 +47,6 @@ jobs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       ArtifactName: 'drop'
 
- 
- - job: DeploymentJob
-   displayName: 'Deploy'
-   pool: ubuntu-local
-   dependsOn: BuildJob
-   condition: succeeded()
-
- 
-  steps:
   - task: AzureWebApp@1
     displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
     inputs:
