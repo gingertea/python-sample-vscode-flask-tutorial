@@ -18,39 +18,43 @@ variables:
 
 pool: ubuntu-local
 
-jobs:
-- job: BuildJob
-  displayName: 'Build'
-  pool: ubuntu-local
+stages:
+- stage: 'Build'
+  displayName: 'Build the web application'
+  jobs: 
+  - job: 'Build'
+    displayName: 'Build job'
+    pool: ubuntu-local
 
-  steps:
-  - script: |
-      python -m venv antenv
-      source antenv/bin/activate
-      python -m pip install --upgrade pip
-      pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
-    workingDirectory: $(projectRoot)
-    displayName: "Install requirements"
 
-  - task: ArchiveFiles@2
-    displayName: 'Archive files'
-    inputs:
-      rootFolderOrFile: '$(projectRoot)'
-      includeRootFolder: false
-      archiveType: zip
-      archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      replaceExistingArchive: true
+    steps:
+    - script: |
+        python -m venv antenv
+        source antenv/bin/activate
+        python -m pip install --upgrade pip
+        pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
+      workingDirectory: $(projectRoot)
+      displayName: "Install requirements"
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Upload package'
-    inputs:
-      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      ArtifactName: 'drop'
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(projectRoot)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
 
-  - task: AzureWebApp@1
-    displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
-    inputs:
-      azureSubscription: $(azureServiceConnectionId)
-      appName: $(webAppName)
-      package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+    - task: PublishBuildArtifacts@1
+      displayName: 'Upload package'
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        ArtifactName: 'drop'
+
+# - task: AzureWebApp@1
+#   displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
+#   inputs:
+#     azureSubscription: $(azureServiceConnectionId)
+#     appName: $(webAppName)
+#     package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
 
