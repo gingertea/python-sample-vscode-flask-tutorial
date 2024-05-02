@@ -54,15 +54,12 @@ jobs:
    dependsOn: BuildJob
    condition: succeeded()
 
-   strategy:
-    runOnce:
-      deploy:
-        steps:
-
-        - task: AzureWebApp@1
-          displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
-          inputs:
-            azureSubscription: $(azureServiceConnectionId)
-            appName: $(webAppName)
-            package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+ 
+  steps:
+  - task: AzureWebApp@1
+    displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
+    inputs:
+      azureSubscription: $(azureServiceConnectionId)
+      appName: $(webAppName)
+      package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
 
