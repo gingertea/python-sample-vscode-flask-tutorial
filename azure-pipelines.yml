@@ -11,7 +11,7 @@ trigger:
 variables:
   # Azure Resource Manager connection created during pipeline creation
   pythonVersion: '3.7'
-  azureServiceConnectionId: '3b7ef9f3-48fc-4d29-a9f8-3de02b79dac0'
+  azureServiceConnectionId: 'sanyamy-test-mi'
   projectRoot: $(System.DefaultWorkingDirectory)
   webAppName: 'sy-test-app'
   environmentName: 'sy-test-app'
