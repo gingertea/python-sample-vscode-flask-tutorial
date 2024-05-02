@@ -51,10 +51,25 @@ stages:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         ArtifactName: 'drop'
 
-# - task: AzureWebApp@1
-#   displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
-#   inputs:
-#     azureSubscription: $(azureServiceConnectionId)
-#     appName: $(webAppName)
-#     package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+- stage: 'Dev'
+  displayName: 'Deploy to the dev environment'
+  dependsOn: Build
+  condition:  succeeded()
+  environment: dev
+  jobs:
+  - deployment: Deploy
+    pool: ubuntu-local
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - task: AzureWebApp@1
+            displayName: 'Azure Web App Deploy: python-sample-vscode-flask-tutorial'
+            inputs:
+              azureSubscription: $(azureServiceConnectionId)
+              appName: $(webAppName)
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+
 
