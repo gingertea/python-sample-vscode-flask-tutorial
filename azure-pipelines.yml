@@ -11,7 +11,8 @@ trigger:
 variables:
   # Azure Resource Manager connection created during pipeline creation
   pythonVersion: '3.7'
-  azureServiceConnectionId: '97428859-41c8-44fd-a47d-aca80b42156d'
+  azureServiceConnectionId: '3b7ef9f3-48fc-4d29-a9f8-3de02b79dac0'
+  projectRoot: $(System.DefaultWorkingDirectory)
 
 pool: ubuntu-local
 
@@ -25,7 +26,6 @@ jobs:
       python -m venv antenv
       source antenv/bin/activate
       python -m pip install --upgrade pip
-      pip install <package_name>
       pip install --target="./.python_packages/lib/site-packages" -r ./requirements.txt
     workingDirectory: $(projectRoot)
     displayName: "Install requirements"
